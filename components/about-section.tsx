@@ -149,7 +149,6 @@ export default function AboutSection() {
       {/* 04 — Businesses We Support (scroll cycling animation) */}
       <WordHeroPage
         items={INDUSTRIES}
-        theme="dark"
         animate={true}
         hue={220}
         startVh={50}
