@@ -1,0 +1,208 @@
+@layer base, stick, demo, debug;
+
+.scroll-hero-root {
+  min-height: 100vh;
+  width: 100%;
+  background: #080808;
+  --start: 50vh;
+  --space: 50vh;
+  --hue: 220;
+  --accent: hsl(var(--hue, 220) 100% 62%);
+  --font-size-min: 14;
+  --font-size-max: 20;
+  --font-ratio-min: 1.1;
+  --font-ratio-max: 1.33;
+  --font-width-min: 375;
+  --font-width-max: 1500;
+}
+
+.scroll-hero-root .fluid {
+  --fluid-min: calc(var(--font-size-min) * pow(var(--font-ratio-min), var(--font-level, 0)));
+  --fluid-max: calc(var(--font-size-max) * pow(var(--font-ratio-max), var(--font-level, 0)));
+  --fluid-preferred: calc(
+    (var(--fluid-max) - var(--fluid-min)) /
+    (var(--font-width-max) - var(--font-width-min))
+  );
+  --fluid-type: clamp(
+    calc((var(--fluid-min) / 16) * 1rem),
+    calc(
+      ((var(--fluid-min) / 16) * 1rem)
+      - (((var(--fluid-preferred) * var(--font-width-min)) / 16) * 1rem)
+      + (var(--fluid-preferred) * 100vi)
+    ),
+    calc((var(--fluid-max) / 16) * 1rem)
+  );
+  font-size: var(--fluid-type);
+}
+
+/* ── Sticky scrolling header ── */
+.scroll-hero-root header {
+  --font-level: 4;
+  --font-size-min: 24;
+  background: #080808;
+  position: sticky;
+  top: calc((var(--count, 10) - 1) * -1lh);
+  line-height: 1.2;
+  display: flex;
+  align-items: start;
+  width: 100%;
+  margin-bottom: var(--space);
+}
+
+.scroll-hero-root header section {
+  display: flex;
+  width: 100%;
+  align-items: start;
+  justify-content: center;
+  padding-top: calc(var(--start) - 0.5lh);
+}
+
+.scroll-hero-root header section h2 {
+  position: sticky;
+  top: calc(var(--start) - 0.5lh);
+  margin: 0;
+  font-weight: 700;
+  color: #F0EFE8;
+  white-space: nowrap;
+  padding-right: 0.25em;
+  font-size: inherit;
+}
+
+.scroll-hero-root ul {
+  font-weight: 700;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: #F0EFE8;
+}
+
+.scroll-hero-root li {
+  --dimmed: color-mix(in oklch, #F0EFE8, #0000 75%);
+  background: linear-gradient(
+    180deg,
+    var(--dimmed) 0 calc(var(--start) - 0.5lh),
+    hsl(220 100% 62%) calc(var(--start) - 0.55lh) calc(var(--start) + 0.55lh),
+    var(--dimmed) calc(var(--start) + 0.5lh)
+  );
+  background-attachment: fixed;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+/* ── CTA panel ── */
+.scroll-hero-root main {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  z-index: 2;
+  background: #080808;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scroll-hero-root main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #080808;
+  border-radius: 1rem 1rem 0 0;
+}
+
+.scroll-hero-root .cta-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+.scroll-hero-root .cta-headline {
+  margin: 0;
+  font-weight: 800;
+  font-size: clamp(2.5rem, 8vw, 7rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #F0EFE8;
+  white-space: nowrap;
+}
+
+.scroll-hero-root .cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  justify-content: center;
+}
+
+.scroll-hero-root .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2.25rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.scroll-hero-root .btn-primary {
+  background: #4D7EFF;
+  color: #fff;
+  border: 2px solid #4D7EFF;
+}
+
+.scroll-hero-root .btn-primary:hover {
+  background: #3a6ee8;
+  border-color: #3a6ee8;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(77, 126, 255, 0.35);
+}
+
+.scroll-hero-root .btn-outline {
+  background: transparent;
+  color: #F0EFE8;
+  border: 2px solid rgba(240, 239, 232, 0.25);
+}
+
+.scroll-hero-root .btn-outline:hover {
+  border-color: rgba(240, 239, 232, 0.6);
+  background: rgba(240, 239, 232, 0.06);
+  transform: translateY(-2px);
+}
+
+/* ── View-timeline animation ── */
+@supports (animation-timeline: view()) {
+  .scroll-hero-root[data-animate='true'] main {
+    view-timeline: --section;
+  }
+
+  .scroll-hero-root[data-animate='true'] main::before {
+    transform-origin: 50% 100%;
+    scale: 0.92;
+    animation: sh-grow both ease-in-out;
+    animation-timeline: --section;
+    animation-range: entry 50%;
+  }
+
+  .scroll-hero-root[data-animate='true'] .cta-block {
+    animation: sh-reveal both ease-in-out;
+    animation-timeline: --section;
+    animation-range: entry 50%;
+  }
+
+  @keyframes sh-reveal {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes sh-grow {
+    to { scale: 1; border-radius: 0; }
+  }
+}
